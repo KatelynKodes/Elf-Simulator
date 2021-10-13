@@ -10,8 +10,9 @@ namespace MathForGames
     {
         private static bool _shouldApplicationclose = false;
         private static int _currentSceneIndex;
-        private Scene[] _scenes = new Scene[0];
+        private static Scene[] _scenes = new Scene[0];
         private static Icon[,] _buffer;
+        private static string _winnerName = "";
 
         /// <summary>
         /// Called to begin the application
@@ -38,7 +39,40 @@ namespace MathForGames
         /// </summary>
         private void Start()
         {
+            Scene RaceScene = new Scene();
+
+            // Finish lines 
+            Actor FinishLine1 = new Actor('|', new Vector2 { X = 115, Y = 0 }, "FinishLine", ConsoleColor.Green);
+            Actor FinishLine2 = new Actor('|', new Vector2 { X = 115, Y = 1 }, "FinishLine", ConsoleColor.Green);
+            Actor FinishLine3 = new Actor('|', new Vector2 { X = 115, Y = 2 }, "FinishLine", ConsoleColor.Green);
+            Actor FinishLine4 = new Actor('|', new Vector2 { X = 115, Y = 3 }, "FinishLine", ConsoleColor.Green);
+
+            //Racers
+            Racer Racer1 = new Racer('S', 0, 0, 3, "Selby", ConsoleColor.Yellow);
+            Racer Racer2 = new Racer('A', 0, 1, 4, "Adrien", ConsoleColor.Red);
+            Racer Racer3 = new Racer('D', 0, 2, 2, "Dianne", ConsoleColor.Blue);
+
+            //Player
+            Player RacerPlayer = new Player('P', 0, 3, 2, "Player", ConsoleColor.Cyan);
+
+            //Adds all actors to the race scene
+            RaceScene.AddActor(FinishLine1);
+            RaceScene.AddActor(FinishLine2);
+            RaceScene.AddActor(FinishLine3);
+            RaceScene.AddActor(FinishLine4);
+            RaceScene.AddActor(Racer1);
+            RaceScene.AddActor(Racer2);
+            RaceScene.AddActor(Racer3);
+            RaceScene.AddActor(RacerPlayer);
+
+            //Sets up the scene array
+            _scenes = new Scene[] { RaceScene };
+
+            //Starts the current scene
             _scenes[_currentSceneIndex].Start();
+
+            //Sets cursor to be invisible
+            Console.CursorVisible = false;
         }
 
         /// <summary>
@@ -60,6 +94,7 @@ namespace MathForGames
         private void End()
         {
             _scenes[_currentSceneIndex].End();
+            Console.WriteLine(_winnerName + "Is the winner of the race");
         }
 
         /// <summary>
@@ -160,9 +195,28 @@ namespace MathForGames
             return true;
         }
 
+        //Closes the Application
         public static void CloseApplication()
         {
             _shouldApplicationclose = true;
+        }
+
+        public static void ChangeWinnerName(string newName)
+        {
+            _winnerName = newName;
+        }
+
+        /// <summary>
+        /// Knocks an opposing actor back a space if the player collides with it
+        /// </summary>
+        /// <param name="opponent"></param>
+        public static void KnockOpponentBack(Actor opponent)
+        {
+            //How much actor is knocked back
+            Vector2 KnockbackValue = new Vector2 { X = 1, Y = 0 };
+
+            //Subtract the current position by that knockback value
+            opponent.GetPosition -= KnockbackValue;
         }
     }
 }

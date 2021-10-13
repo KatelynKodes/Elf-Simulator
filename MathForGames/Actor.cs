@@ -29,6 +29,16 @@ namespace MathForGames
             set { _position = value; }
         }
 
+        public Icon GetIcon
+        {
+            get { return _icon; }
+        }
+
+        public string GetName
+        {
+            get { return _name; }
+        }
+
         public Actor(char icon, float x, float y, string name = "Actor", ConsoleColor IconColor = ConsoleColor.White) : 
             this(icon, new Vector2 { X = x, Y = y}, name, IconColor ){}
 
@@ -60,7 +70,11 @@ namespace MathForGames
 
         public virtual void OnCollision(Actor actor)
         {
-            
+            if (actor.GetName.ToLower() == "finishline")
+            {
+                Engine.ChangeWinnerName(this.GetName);
+                Engine.CloseApplication();
+            }
         }
     }
 }
