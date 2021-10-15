@@ -70,7 +70,7 @@ namespace MathForGames
 
         public virtual void OnCollision(Actor actor)
         {
-            if (actor.GetName.ToLower() == "finishline")
+            if (actor.GetIcon.Symbol == '|')
             {
                 Engine.ChangeWinnerName(this.GetName);
                 Engine.CloseApplication();

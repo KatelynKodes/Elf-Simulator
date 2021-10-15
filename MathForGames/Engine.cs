@@ -9,7 +9,7 @@ namespace MathForGames
     class Engine
     {
         private static bool _shouldApplicationclose = false;
-        private static int _currentSceneIndex;
+        private static int _currentSceneIndex = 0;
         private static Scene[] _scenes = new Scene[0];
         private static Icon[,] _buffer;
         private static string _winnerName = "";
@@ -43,9 +43,13 @@ namespace MathForGames
 
             // Finish lines 
             Actor FinishLine1 = new Actor('|', new Vector2 { X = 115, Y = 0 }, "FinishLine", ConsoleColor.Green);
-            Actor FinishLine2 = new Actor('|', new Vector2 { X = 115, Y = 1 }, "FinishLine", ConsoleColor.Green);
-            Actor FinishLine3 = new Actor('|', new Vector2 { X = 115, Y = 2 }, "FinishLine", ConsoleColor.Green);
-            Actor FinishLine4 = new Actor('|', new Vector2 { X = 115, Y = 3 }, "FinishLine", ConsoleColor.Green);
+            Actor FinishLine2 = new Actor('|', new Vector2 { X = 115, Y = 1 }, "FinishLine2", ConsoleColor.Green);
+            Actor FinishLine3 = new Actor('|', new Vector2 { X = 115, Y = 2 }, "FinishLine3", ConsoleColor.Green);
+            Actor FinishLine4 = new Actor('|', new Vector2 { X = 115, Y = 3 }, "FinishLine4", ConsoleColor.Green);
+            Actor FinishLine5 = new Actor('|', new Vector2 { X = 116, Y = 0 }, "FinishLine5", ConsoleColor.Green);
+            Actor FinishLine6 = new Actor('|', new Vector2 { X = 116, Y = 1 }, "FinishLine6", ConsoleColor.Green);
+            Actor FinishLine7 = new Actor('|', new Vector2 { X = 116, Y = 2 }, "FinishLine7", ConsoleColor.Green);
+            Actor FinishLine8 = new Actor('|', new Vector2 { X = 116, Y = 3 }, "FinishLine8", ConsoleColor.Green);
 
             //Racers
             Racer Racer1 = new Racer('S', 0, 0, 3, "Selby", ConsoleColor.Yellow);
@@ -60,6 +64,10 @@ namespace MathForGames
             RaceScene.AddActor(FinishLine2);
             RaceScene.AddActor(FinishLine3);
             RaceScene.AddActor(FinishLine4);
+            RaceScene.AddActor(FinishLine5);
+            RaceScene.AddActor(FinishLine6);
+            RaceScene.AddActor(FinishLine7);
+            RaceScene.AddActor(FinishLine8);
             RaceScene.AddActor(Racer1);
             RaceScene.AddActor(Racer2);
             RaceScene.AddActor(Racer3);
@@ -94,7 +102,9 @@ namespace MathForGames
         private void End()
         {
             _scenes[_currentSceneIndex].End();
+            Console.Clear();
             Console.WriteLine(_winnerName + "Is the winner of the race");
+            Console.ReadKey(true);
         }
 
         /// <summary>
