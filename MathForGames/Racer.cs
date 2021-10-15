@@ -33,5 +33,10 @@ namespace MathForGames
             //adds the velocity to the base position
             base.GetPosition += _velocity;
         }
+
+        public override void OnCollision(Actor actor)
+        {
+            base.OnCollision(actor);
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace MathForGames
                 // Check for collision
                 for (int j = 0; j < _actors.Length; j++)
                 {
-                    if (_actors[i].GetPosition == _actors[j].GetPosition)
+                    if (_actors[i].GetPosition == _actors[j].GetPosition && j != i)
                     {
                         _actors[i].OnCollision(_actors[j]);
                     }
