@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using MathLibrary;
+using Raylib_cs;
 
 namespace MathForGames
 {
@@ -22,8 +23,8 @@ namespace MathForGames
             set { _velocity = value; }
         }
 
-        public Player(char icon, float x, float y, float speed, string name = "Actor", ConsoleColor IconColor = ConsoleColor.White) :
-            base(icon, x, y, name, IconColor)
+        public Player(char icon, float x, float y, float speed, Color IconColor, string name = "Actor") :
+            base(icon, x, y, IconColor, name)
         {
             _speed = speed;
         }
@@ -32,29 +33,16 @@ namespace MathForGames
         /// Checks which button is pressed by the player, then moves the player object to that position
         /// Updates every frame
         /// </summary>
-        public override void Update()
+        public override void Update(float deltaTime)
         {
-            Vector2 Movedirection = new Vector2();
-            ConsoleKey KeyPressed = Engine.GetConsoleKey();
+            int xDirection = -Convert.ToInt32(Raylib.IsKeyDown(KeyboardKey.KEY_A)) + 
+                Convert.ToInt32(Raylib.IsKeyDown(KeyboardKey.KEY_D));
+            int yDirection = -Convert.ToInt32(Raylib.IsKeyDown(KeyboardKey.KEY_W)) +
+                Convert.ToInt32(Raylib.IsKeyDown(KeyboardKey.KEY_S)); ;
 
-            if (KeyPressed == ConsoleKey.A)
-            {
-                Movedirection = new Vector2 { X = -1};
-            }
-            if (KeyPressed == ConsoleKey.D)
-            {
-                Movedirection = new Vector2 { X = 1 };
-            }
-            if (KeyPressed == ConsoleKey.W)
-            {
-                Movedirection = new Vector2 { Y = -1 };
-            }
-            if (KeyPressed == ConsoleKey.S)
-            {
-                Movedirection = new Vector2 { Y = 1 };
-            }
+            Vector2 Movedirection = new Vector2(xDirection, yDirection);
 
-            GetVelocity = Movedirection * _speed;
+            GetVelocity = Movedirection * _speed * deltaTime;
 
             GetPosition += _velocity;
         }

@@ -31,7 +31,7 @@ namespace MathForGames
         /// Calls update for every actor in the actor array
         /// Calls start for the actor if it wasn't already called
         /// </summary>
-        public virtual void Update()
+        public virtual void Update(float deltaTime)
         {
             for (int i = 0; i < _actors.Length; i++)
             {
@@ -39,7 +39,7 @@ namespace MathForGames
                 {
                     _actors[i].Start();
                 }
-                _actors[i].Update();
+                _actors[i].Update(deltaTime);
 
                 // Check for collision
                 for (int j = 0; j < _actors.Length; j++)

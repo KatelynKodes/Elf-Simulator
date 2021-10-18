@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using MathLibrary;
+using Raylib_cs;
 
 namespace MathForGames
 {
@@ -12,8 +13,8 @@ namespace MathForGames
         private Vector2 _velocity;
 
         // Constructor
-        public Racer(char RacerIcon, float x, float y, float RacerSpeed, string RacerName, ConsoleColor Racercolor) 
-            : base(RacerIcon, x, y, RacerName, Racercolor)
+        public Racer(char RacerIcon, float x, float y, float RacerSpeed, Color Racercolor, string RacerName) 
+            : base(RacerIcon, x, y, Racercolor, RacerName)
         {
             _RunSpeed = RacerSpeed;
         }
@@ -22,7 +23,7 @@ namespace MathForGames
         /// Moves the racer to the right at a constant velocity depending on their runspeed
         /// Then adds that velocity to the players position to change the racers position on screen
         /// </summary>
-        public override void Update()
+        public override void Update(float deltaTime)
         {
             //Movement direction is always forward
             Vector2 MovementDirection = new Vector2 { X = 1 };

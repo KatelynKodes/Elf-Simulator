@@ -7,6 +7,11 @@ namespace MathLibrary
         public float X;
         public float Y;
 
+        public Vector2(float xValue, float yValue)
+        {
+            X = xValue;
+            Y = yValue;
+        }
 
         /// <summary>
         /// Returns a Vector2 that contains x and y values that are sums of two Vector2 x and Y values

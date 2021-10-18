@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using MathLibrary;
+using Raylib_cs;
+using System.Diagnostics;
 
 namespace MathForGames
 {
     class Engine
     {
-        private static bool _shouldApplicationclose = false;
+        public static bool _applicationShouldClose = false;
         private static int _currentSceneIndex = 0;
         private static Scene[] _scenes = new Scene[0];
-        private static Icon[,] _buffer;
         private static string _winnerName = "";
+        private Stopwatch _stopwatch = new Stopwatch();
 
         /// <summary>
         /// Called to begin the application
@@ -22,12 +24,25 @@ namespace MathForGames
             //Call start for the entire application
             Start();
 
+            float currTime = 0;
+            float lastTime = 0;
+            float deltaTime = 0;
+
             //Loop until application is told to close
-            while (!_shouldApplicationclose)
+            while (!Raylib.WindowShouldClose())
             {
-                Update();
+                //Get how much time has passed since the application started
+                currTime = _stopwatch.ElapsedMilliseconds / 1000;
+
+                //Set deltatime to be the difference in time from the last time recorded to the current time recorded
+                deltaTime = currTime - lastTime;
+
+                Update(deltaTime);
                 Draw();
                 Thread.Sleep(150);
+
+                //Set the last time recorded to be the current time
+                lastTime = currTime;
             }
 
             //Calll at the end of the entire application.
@@ -39,28 +54,33 @@ namespace MathForGames
         /// </summary>
         private void Start()
         {
+            _stopwatch.Start();
+
+            //Create Window using raylib
+            Raylib.InitWindow(800, 450, "MathForgames");
+
             Scene RaceScene = new Scene();
 
-            // Finish lines 
-            Actor FinishLine1 = new Actor('|', new Vector2 { X = 115, Y = 0 }, "FinishLine", ConsoleColor.Green);
-            Actor FinishLine2 = new Actor('|', new Vector2 { X = 115, Y = 1 }, "FinishLine2", ConsoleColor.Green);
-            Actor FinishLine3 = new Actor('|', new Vector2 { X = 115, Y = 2 }, "FinishLine3", ConsoleColor.Green);
-            Actor FinishLine4 = new Actor('|', new Vector2 { X = 115, Y = 3 }, "FinishLine4", ConsoleColor.Green);
-            Actor FinishLine5 = new Actor('|', new Vector2 { X = 116, Y = 0 }, "FinishLine5", ConsoleColor.Green);
-            Actor FinishLine6 = new Actor('|', new Vector2 { X = 116, Y = 1 }, "FinishLine6", ConsoleColor.Green);
-            Actor FinishLine7 = new Actor('|', new Vector2 { X = 116, Y = 2 }, "FinishLine7", ConsoleColor.Green);
-            Actor FinishLine8 = new Actor('|', new Vector2 { X = 116, Y = 3 }, "FinishLine8", ConsoleColor.Green);
+            /* Finish lines 
+            Actor FinishLine1 = new Actor('|', new Vector2 { X = 115, Y = 0 }, Color.GREEN, "FinishLine");
+            Actor FinishLine2 = new Actor('|', new Vector2 { X = 115, Y = 1 }, Color.GREEN, "FinishLine2");
+            Actor FinishLine3 = new Actor('|', new Vector2 { X = 115, Y = 2 }, Color.GREEN, "FinishLine3");
+            Actor FinishLine4 = new Actor('|', new Vector2 { X = 115, Y = 3 }, Color.GREEN, "FinishLine4");
+            Actor FinishLine5 = new Actor('|', new Vector2 { X = 116, Y = 0 }, Color.GREEN, "FinishLine5");
+            Actor FinishLine6 = new Actor('|', new Vector2 { X = 116, Y = 1 }, Color.GREEN, "FinishLine6");
+            Actor FinishLine7 = new Actor('|', new Vector2 { X = 116, Y = 2 }, Color.GREEN, "FinishLine7");
+            Actor FinishLine8 = new Actor('|', new Vector2 { X = 116, Y = 3 }, Color.GREEN, "FinishLine8");
 
             //Racers
-            Racer Racer1 = new Racer('S', 0, 0, 3, "Selby", ConsoleColor.Yellow);
-            Racer Racer2 = new Racer('A', 0, 1, 4, "Adrien", ConsoleColor.Red);
-            Racer Racer3 = new Racer('D', 0, 2, 2, "Dianne", ConsoleColor.Blue);
+            Racer Racer1 = new Racer('S', 0, 0, 3, Color.YELLOW, "Selby");
+            Racer Racer2 = new Racer('A', 0, 1, 4, Color.RED, "Adrien");
+            Racer Racer3 = new Racer('D', 0, 2, 2, Color.DARKBLUE, "Dianne");*/
 
             //Player
-            Player RacerPlayer = new Player('P', 0, 3, 2, "Player", ConsoleColor.Cyan);
+            Player RacerPlayer = new Player('@', 0, 3, 2, Color.SKYBLUE, "Player");
 
             //Adds all actors to the race scene
-            RaceScene.AddActor(FinishLine1);
+            /*RaceScene.AddActor(FinishLine1);
             RaceScene.AddActor(FinishLine2);
             RaceScene.AddActor(FinishLine3);
             RaceScene.AddActor(FinishLine4);
@@ -70,7 +90,7 @@ namespace MathForGames
             RaceScene.AddActor(FinishLine8);
             RaceScene.AddActor(Racer1);
             RaceScene.AddActor(Racer2);
-            RaceScene.AddActor(Racer3);
+            RaceScene.AddActor(Racer3);*/
             RaceScene.AddActor(RacerPlayer);
 
             //Sets up the scene array
@@ -86,9 +106,9 @@ namespace MathForGames
         /// <summary>
         /// Called everytime the game loops
         /// </summary>
-        private void Update()
+        private void Update(float deltaTime)
         {
-            _scenes[_currentSceneIndex].Update();
+            _scenes[_currentSceneIndex].Update(deltaTime);
 
             while (Console.KeyAvailable)
             {
@@ -102,6 +122,7 @@ namespace MathForGames
         private void End()
         {
             _scenes[_currentSceneIndex].End();
+            Raylib.CloseWindow();
             Console.Clear();
             Console.WriteLine(_winnerName + "Is the winner of the race");
             Console.ReadKey(true);
@@ -112,32 +133,13 @@ namespace MathForGames
         /// </summary>
         private void Draw()
         {
-            //Clear the stuff that was on the screen in the last frame
-            _buffer = new Icon[Console.WindowWidth, Console.WindowHeight-1];
-
-            //Reset the cursor position
-            Console.SetCursorPosition(0, 0);
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Color.BLACK);
 
             //Adds all actor icons to buffer
             _scenes[_currentSceneIndex].Draw();
 
-            //Iterate through buffer
-            for (int y = 0; y < _buffer.GetLength(1); y++)
-            {
-                for (int x = 0; x < _buffer.GetLength(0); x++)
-                {
-                    if (_buffer[x, y].Symbol == '\0')
-                    {
-                        _buffer[x, y].Symbol = ' ';
-                    }
-                    //Set console color
-                    Console.ForegroundColor = _buffer[x, y].color;
-                    //Print the symbol of the item in the buffer
-                    Console.Write(_buffer[x, y].Symbol);
-                }
-                //Skip a line once row is complete
-                Console.WriteLine();
-            }
+            Raylib.EndDrawing();
         }
 
         /// <summary>
@@ -184,31 +186,10 @@ namespace MathForGames
             return Console.ReadKey(true).Key;
         }
 
-        /// <summary>
-        /// Addds the icon to the buffer to print to the screen in the next draw call.
-        /// prints the icon at the given position in the buffer.
-        /// </summary>
-        /// <param name="icon"> The icon to draw</param>
-        /// <param name="position"> the position of the icon in the buffer</param>
-        /// <returns>False if the position is outside the bounds of the buffer</returns>
-        public static bool Render(Icon icon, Vector2 position)
-        {
-            //If the position is out of bounds...
-            if (position.X < 0 || position.X >= _buffer.GetLength(0) || position.Y < 0 || position.Y >= _buffer.GetLength(1))
-            {
-                //...Returns false
-                return false;
-            }
-
-            //set the buffer at the position index to the icon.
-            _buffer[(int)position.X, (int)position.Y] = icon;
-            return true;
-        }
-
         //Closes the Application
         public static void CloseApplication()
         {
-            _shouldApplicationclose = true;
+            _applicationShouldClose = true;
         }
 
         public static void ChangeWinnerName(string newName)
