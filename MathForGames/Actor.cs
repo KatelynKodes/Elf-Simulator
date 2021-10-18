@@ -58,6 +58,7 @@ namespace MathForGames
 
         public virtual void Update(float deltaTime)
         {
+            Console.WriteLine(GetName + ": (" + GetPosition.X + "," + GetPosition.Y + ")");
         }
 
         public virtual void Draw()

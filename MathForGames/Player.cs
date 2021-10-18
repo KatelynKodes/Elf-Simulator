@@ -42,7 +42,7 @@ namespace MathForGames
 
             Vector2 Movedirection = new Vector2(xDirection, yDirection);
 
-            GetVelocity = Movedirection * _speed * deltaTime;
+            GetVelocity = Movedirection.Normalized * _speed * deltaTime;
 
             GetPosition += _velocity;
         }
